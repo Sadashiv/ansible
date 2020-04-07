@@ -1,0 +1,11 @@
+[agentnode]
+#loclahost
+#psorelease.mobileum.com
+#172.16.129.15
+#alias fqdn/IP                      connetion type winrm    user
+172.16.129.43
+#10.10.20.205
+#10.10.17.85 ansible_user=root
+#rnd    ansible_host=10.10.20.205    ansible_connetion=ssh   ansible_user=root
+#local testing
+#localhost ansible_connetion=localhost
