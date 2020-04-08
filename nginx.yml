@@ -25,9 +25,14 @@
       when: item.required == True
       loop: "{{ packages }}"
     - name: Ensure service running
-      copy:
-        src: nginx.conf
+      #copy:
+      template:
+        src: default.conf
         dest: /etc/nginx/conf.d/default.conf
+        src: README.md
+        dest: /etc/nginx
+      vars:
+        nginx_port: 8889
     - name: Restart
       service:
         name: nginx
