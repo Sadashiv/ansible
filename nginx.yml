@@ -24,19 +24,32 @@
         state: started
       when: item.required == True
       loop: "{{ packages }}"
-    - name: Ensure service running
-      #copy:
+    - name: Nginx template files to parse
       template:
         src: default.conf
         dest: /etc/nginx/conf.d/default.conf
+      vars:
+        #file: variable.yml
+        nginx_port: 8090 #'{{ nginx_port }}'
+    - name:
+      copy:
         src: README.md
         dest: /etc/nginx
-      vars:
-        nginx_port: 8889
+        #: {{ nginx_port }}
+      #  nginx_port: 8889
     - name: Restart
       service:
         name: nginx
-        state: restarted
+        state: reloaded
+    - name: Enable nginx service on reboot
+      service:
+        name: nginx
+        enabled: yes
+    - name: Enable Apache service on reboot
+      service:
+        name: httpd
+        enabled: yes
+#    - include_vars:
 #    - name: Change port and restart
 #      service:
 #        name: nginx

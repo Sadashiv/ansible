@@ -318,3 +318,4 @@ ansible webservers -m service -a "name=httpd state=restarted"
 In a playbook the pattern is the content of the hosts: line for each play:
 
 - name: <play_name>
+ansible agentnode -m setup -u root -i hosts
