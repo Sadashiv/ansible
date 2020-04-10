@@ -37,6 +37,8 @@
         dest: /etc/nginx
         #: {{ nginx_port }}
       #  nginx_port: 8889
+    - debug:
+        msg: "Print the details"
     - name: Restart
       service:
         name: nginx
@@ -49,8 +51,3 @@
       service:
         name: httpd
         enabled: yes
-#    - include_vars:
-#    - name: Change port and restart
-#      service:
-#        name: nginx
-#        state: restarted
