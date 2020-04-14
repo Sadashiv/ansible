@@ -1,7 +1,7 @@
 ---
 - name: This sets up and httpd server
-  #hosts: 10.10.20.205
-  hosts: all
+  hosts: 10.10.20.205
+  #hosts: all
   remote_user: root
   tasks:
   - name: Install apache packages '{{ ansible_os_family }}' '{{ ansible_distribution_version }}'

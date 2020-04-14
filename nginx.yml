@@ -1,9 +1,14 @@
 ---
+#- import_playbook: connectserver.yml
 - name: Install mysql, nginx and httpd software
-  hosts: all
+  hosts: agentnode
   remote_user: root
+  gather_facts: no
+  #var_files:
+  #  - ./vars/variable.yml
+
   vars:
-    packages:
+    packag:
         - name: nginx
           required: True
 #        - name: mysql
@@ -12,36 +17,51 @@
           required: True
 
   tasks:
+    - name: Include varaible names
+      include_vars:
+        file: ./vars/variable.yml
     - name: Install '{{ item.name }}' in RHEL
       yum:
         name: '{{ item.name }}'
         state: present
       when: item.required == True
-      loop: "{{ packages }}"
-    - name: Ensure service running
-      service:
-        name: '{{ item.name }}'
-        state: started
-      when: item.required == True
-      loop: "{{ packages }}"
-    - name: Nginx template files to parse
+      loop: "{{ packag }}"
+#    - name: Install nginx in RHEL
+#      yum:
+#        name: nginx
+#        state: present
+#    - name: Ensure service running
+#      service:
+#        name: '{{ item.name }}'
+#        state: started
+#      when: item.required == True
+#      loop: "{{ packages }}"
+#  tasks:
+    - name: Nginx template files to parse {{ ansible_facts }}
       template:
-        src: default.conf
+        src: ./templates/default.j2
         dest: /etc/nginx/conf.d/default.conf
+#      vars:
+#        nginx_port: "{{ nginx_port }}"
+    - name: httpd template files to parse
+      template:
+        src: ../templates/httpd.j2
+        dest: /etc/httpd/conf/httpd.conf
       vars:
-        #file: variable.yml
-        nginx_port: 8090 #'{{ nginx_port }}'
+#        httpd_port: 8886 #"{{ httpd_port }}"
     - name:
       copy:
         src: README.md
         dest: /etc/nginx
-        #: {{ nginx_port }}
-      #  nginx_port: 8889
     - debug:
         msg: "Print the details"
-    - name: Restart
+    - name: Nginx Restart
       service:
         name: nginx
+        state: reloaded
+    - name: httpd Restart
+      service:
+        name: httpd
         state: reloaded
     - name: Enable nginx service on reboot
       service:
@@ -51,3 +71,11 @@
       service:
         name: httpd
         enabled: yes
+#      notify:
+#        - restart httpd
+#        - restart nginx
+
+#  tasks:
+#    - name: Print or get working directory
+#      command: pwd
+...
