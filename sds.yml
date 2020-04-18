@@ -1,0 +1,23 @@
+---
+- hosts: all
+  gather_facts: no
+  remote_user: root
+  vars:
+    user: root
+  tasks:
+    - name: Ensure a directory exists
+      file:
+        path: /root/sds/temp
+        state: directory
+        recurse: yes
+#    - name: Copy the RPM packages
+#      copy:
+#         src: RWARSDS7.0-20.02.09-R.i386.rpm.gz
+#         dest: /root/sds/RWARSDS7.0-20.02.09-R.i386.rpm.gz
+#    - name: Chdir and gunzip
+#      command: chdir=/root/sds gunzip -f RWARSDS7.0-20.02.09-R.i386.rpm.gz
+#    - name: Install RPM package
+#      yum:
+#        name: /root/sds/RWARSDS7.0-20.02.09-R.i386.rpm
+#        state: present
+

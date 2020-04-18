@@ -4,8 +4,8 @@
   hosts: agentnode
   remote_user: root
   gather_facts: no
-  #var_files:
-  #  - ./vars/variable.yml
+  vars_files:
+    - ./vars/variable.yml
 
   vars:
     packag:
@@ -18,9 +18,9 @@
 
   tasks:
     - name: Include varaible names
-      include_vars:
-        file: ./vars/variable.yml
-    - name: Install '{{ item.name }}' in RHEL
+#      include_vars:
+#        file: ./vars/variable.yml
+    - name: Install {{ item }} in RHEL
       yum:
         name: '{{ item.name }}'
         state: present
@@ -36,7 +36,7 @@
 #        state: started
 #      when: item.required == True
 #      loop: "{{ packages }}"
-#  tasks:
+  tasks:
     - name: Nginx template files to parse {{ ansible_facts }}
       template:
         src: ./templates/default.j2

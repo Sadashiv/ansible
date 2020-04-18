@@ -1,6 +1,6 @@
 ---
 - name: This sets up and httpd server
-  hosts: 10.10.20.205
+  hosts: all
   #hosts: all
   remote_user: root
   tasks:
