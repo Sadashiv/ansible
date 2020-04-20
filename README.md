@@ -319,3 +319,9 @@ In a playbook the pattern is the content of the hosts: line for each play:
 
 - name: <play_name>
 ansible agentnode -m setup -u root -i hosts
+127.0.0.1 -B 1 -P 0 -a "/usr/bin/ls --do-stuff"
+B 1 timeout for 1 second
+
+ansible-playbook conditional.yml --check #Dry run no operation
+check_mode: yes
+

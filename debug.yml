@@ -1,0 +1,21 @@
+---
+- hosts: 127.0.0.1
+  debugger: on_failed
+  gather_facts: no
+  serial: "30%"
+  vars:
+    var1: 127.0.0.1
+  tasks:
+    - name: wrong variable
+      #ping: data={{ wrong_var }}
+      ping: data={{ var1 }}
+
+#Available Commands
+#p(print) task/task_vars/host/result
+#task.args, task_vars['var1']
+#always -> Always invoke the debugger, regardless of the outcome
+#never -> Never invoke the debugger, regardless of the outcome
+#on_failed -> Only invoke the debugger if a task fails
+#on_unreachable -> Only invoke the debugger if the a host was unreachable
+#on_skipped -> Only invoke the debugger if the task is skipped
+...

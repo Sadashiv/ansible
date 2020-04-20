@@ -1,0 +1,51 @@
+- hosts: 127.0.0.1
+  become: true
+  any_errors_fatal: true
+  vars_files:
+    - ./vars/variable.yml
+
+  tasks:
+    - block:
+        - include_tasks: httpd.yml
+      any_errors_fatal: true
+
+  tasks:
+    - name: Install nginx1
+      package:
+        name: nginx
+        state: present
+      environment:
+        http_proxy: http://proxy.example.com:8080
+
+#environment: does not affect Ansible itself, ONLY the context of the specific task action and this does not include
+#Ansible’s own configuration settings nor the execution of any other plugins, including lookups, filters, and so on.
+#The environment can also be stored in a variable, and accessed like so:
+#
+- hosts: 127.0.0.1
+  become: true
+  remote_user: root
+
+  # here we make a variable named "proxy_env" that is a dictionary
+  vars:
+    proxy_env:
+      http_proxy: http://proxy.example.com:8080
+
+  tasks:
+    - name: Install nginx2
+      package:
+        name: nginx
+        state: present
+      environment: "{{ proxy_env }}"
+      ignore_errors: yes
+
+  tasks:
+    - name: Install nginx3
+      package:
+        name: nginx
+        state: present
+#      environment: "{{ set_http_proxy }}"
+    - name: Fail task when both files are identical
+      raw: diff nginx.yml httpd.yml
+      register: diff_cmd
+      failed_when: diff_cmd.rc == 0 or diff_cmd.rc >= 2
+

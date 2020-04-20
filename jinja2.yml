@@ -1,0 +1,43 @@
+---
+- name: Template Jinja2
+  hosts: 127.0.0.1
+  connection: local
+  #remote_user: sadashiv
+  tasks:
+    - name: Get data
+      shell: "ls -lrt"
+      register: output
+    - debug: var=output.stdout_lines
+
+  tasks:
+    - shell: cat vars/variable.yml
+      register: result
+    - debug:
+       msg: '{{ item }}'
+      loop: '{{ result.stdout | from_yaml_all | list}}'
+
+  tasks:
+    - name: Touch files with optional mode
+      file:
+        dest: "{{ item.path }}"
+        state: touch
+      loop:
+        - path: /tmp/foo
+        - path: /tmp/bar
+        - path: /tmp/baz
+          mode: "0444"
+
+#Lookup variable used to read the file
+  vars:
+    motd_value: "{{ lookup('file', '/etc/issue') }}"
+  tasks:
+    - debug:
+        msg: "motd value is {{ motd_value }}"
+
+#- name: Using local location
+#  local_location:
+#      shell: "ls -lrt"
+#      register: output
+#    - debug: var=output.stdout_lines
+#
+...

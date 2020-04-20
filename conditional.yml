@@ -2,6 +2,8 @@
 - name: Ansible playbook for contditonal operations
   hosts: 127.0.0.1
   become: true
+  debugger: on_failed
+  serial: "10%"
   vars_files:
     - ./vars/variable.yml
 
@@ -66,8 +68,8 @@
      loop: 
        - ramesh
        - akku
-     become: true
-     #become_user: sadashiv
+     #become: true
+     #become_user: root
      #become_method: su
 
 #Iterating over a list of hashes
@@ -82,7 +84,7 @@
      loop:
        - { name: 'testuser1', groups: 'sadashiv' }
        - { name: 'testuser2', groups: 'sadashiv' }
-     become: true
+     #become: true
 
 #   - name: optimal yum
 #     #yum:
