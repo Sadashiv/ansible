@@ -1,0 +1,38 @@
+---
+- name: Install mysql, nginx and httpd software
+  hosts: all
+  remote_user: root
+  vars:
+    packages:
+        - name: nginx
+          required: True
+#        - name: mysql
+#          required: True
+        - name: httpd
+          required: True
+
+  tasks:
+    - name: Install '{{ item.name }}' in RHEL
+      yum:
+        name: '{{ item.name }}'
+        state: present
+      when: item.required == True
+      loop: "{{ packages }}"
+    - name: Ensure service running
+      service:
+        name: '{{ item.name }}'
+        state: started
+      when: item.required == True
+      loop: "{{ packages }}"
+    - name: Ensure service running
+      copy:
+        src: nginx.conf
+        dest: /etc/nginx/conf.d/default.conf
+    - name: Restart
+      service:
+        name: nginx
+        state: restarted
+#    - name: Change port and restart
+#      service:
+#        name: nginx
+#        state: restarted

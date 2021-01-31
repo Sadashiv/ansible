@@ -1,0 +1,39 @@
+---
+- hosts: 127.0.0.1
+  gather_facts: no
+  remote_user: root
+  vars:
+    user: root
+  tasks:
+    - name: Ensure a directory exists
+      file:
+        path: /root/
+        state: directory
+    - name: Copy the RPM packages
+      copy:
+         src: gcc.tar.gz
+         dest: /root/
+    - name: Chdir and untar
+      command: chdir=/root/ tar xvf *.tar.gz
+    - name: Install RPM package
+      yum:
+        name: gcc.rpm
+        state: present
+
+#      register: ansible_folder
+#    - name: Install packages
+#      yum: name=nginx state=present enablerepo=nginx
+
+#    - name: add repository nginx-release (CentOS6/CentOS7)
+#      yum: name="http://nginx.org/packages/centos/{{ansible_distribution_major_version}}/noarch/RPMS/nginx-release-centos-{{ansible_distribution_major_version}}-0.el{{ansible_distribution_major_version}}.ngx.noarch.rpm"
+#      when: result|failed
+#
+#    - name: disable the repository (pls set --enablerepo=nginx if you use it)
+#      replace: dest=/etc/yum.repos.d/nginx.repo regexp="enabled *= *1" replace="enabled=0"
+#      ignore_errors: True
+#
+#    - name: install nginx
+#      yum: name=nginx state=present enablerepo=nginx
+#
+#    - name: Start Nginx
+#      service: name=nginx enabled=yes state=started
