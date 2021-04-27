@@ -1,0 +1,39 @@
+---
+- name: Playbook for error handling
+  hosts: 127.0.0.1
+  any_errors_fatal: true
+  tasks:
+    - name: this will not be counted as a failure
+      command: /bin/false
+      ignore_errors: yes
+
+    - name: Fail task when the command error output prints FAILED
+      command: /usr/bin/example-command -x -y -z
+      register: command_result
+      failed_when: "'FAILED' in command_result.stderr"
+
+    - name: Fail task when both files are identical
+      raw: diff nginx.yml httpd.yml
+      register: diff_cmd
+      failed_when: diff_cmd.rc == 0 or diff_cmd.rc >= 2
+
+#You can also combine multiple conditions to override “changed” result:
+    - name: combine output of two or more ouputs
+      command: /bin/fake_command
+      register: result
+      ignore_errors: True
+      changed_when:
+        - '"ERROR" in result.stderr'
+        - result.rc == 2
+
+    - name: Handle the error
+      block:
+        - debug:
+            msg: 'I execute normally'
+        - name: i force a failure
+          command: /bin/false
+        - debug:
+            msg: 'I never execute, due to the above task failing, :-('
+      rescue:
+        - debug:
+            msg: 'I caught an error, can do stuff here to fix it, :-)'

@@ -1,0 +1,52 @@
+#Plugins are pieces of code that augment Ansible’s core functionality.
+#Ansible uses a plugin architecture to enable a rich, flexible and expandable feature set.
+
+Action Plugins
+Become Plugins
+Cache Plugins
+Callback Plugins
+Cliconf Plugins
+Connection Plugins
+Httpapi Plugins
+Inventory Plugins
+Lookup Plugins
+Netconf Plugins
+Shell Plugins
+Strategy Plugins
+Vars Plugins
+Filters
+Tests
+Plugin Filter Configuration
+
+ansible-doc -t become -l
+
+ksu        Kerberos substitute user
+pbrun      PowerBroker run
+enable     Switch to elevated permissions on a network device
+sesu       CA Privileged Access Manager
+pmrun      Privilege Manager run
+runas      Run As user
+sudo       Substitute User DO
+su         Substitute User
+doas       Do As user
+pfexec     profile based execution
+machinectl Systemd's machinectl privilege escalation
+dzdo       Centrify's Direct Authorize
+
+profile_tasks – adds time information to tasks
+say – notify using software speech synthesizer
+selective – only print certain tasks
+skippy – Ansible screen output that ignores skipped status
+splunk – Sends task result events to Splunk HTTP Event Collector
+stderr – Splits output, sending failed tasks to stderr
+sumologic – Sends task result events to Sumologic
+syslog_json – sends JSON events to syslog
+timer – Adds time to play stats
+tree – Save host events to files
+unixy – condensed Ansible output
+yaml – yaml-ized Ansible screen output
+aireos – Use aireos cliconf to run command on Cisco WLC platform
+aruba – Use aruba cliconf to run command on Aruba platform
+asa – Use asa cliconf to run command on Cisco ASA platform
+ce – Use ce cliconf to run command on HUAWEI CloudEngine platform
+

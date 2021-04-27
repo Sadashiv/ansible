@@ -1,0 +1,27 @@
+---
+- name: This sets up and httpd server
+  hosts: 127.0.0.1
+  #hosts: all
+  become: true
+  tasks:
+  - name: Install apache packages '{{ ansible_os_family }}' '{{ ansible_distribution_version }}'
+    yum:
+      name: apache2
+      state: present
+    when: ansible_os_family == "Debian"
+#  - name: ensure httpd is running '{{ ansible_os_family }}' '{{ ansible_distribution_version }}'
+#    service: 
+#      name: httpd
+#      state: started
+#    when: ansible_os_family == "Redhat"
+#  - name: open port 80 for http access
+#    firewalld: zone=public port=5000/tcp permanent=true state=enabled
+#    firewalld:
+#      zone: public
+#      permement: true
+#      state: enabled
+#      port: "80/tcp"
+#  - name: Restart the firewalld service to load in the firewall changes
+#    service:
+#      name: firewalld
+#      state: restarted

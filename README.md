@@ -325,3 +325,9 @@ B 1 timeout for 1 second
 ansible-playbook conditional.yml --check #Dry run no operation
 check_mode: yes
 
+
+rc
+Some modules execute command line utilities or are geared for executing commands directly (raw, shell, command, etc),
+this field contains ‘return code’ of these utilities.
+
+results

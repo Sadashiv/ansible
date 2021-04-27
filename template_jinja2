@@ -1,0 +1,145 @@
+Templating(Jinja2)
+==================
+
+Please note that all templating happens on the Ansible controller
+before the task is sent and executed on the target machine.
+This is done to minimize the requirements on the target
+(jinja2 is only required on the controller) and to be able to pass
+the minimal information needed for the task, so the target machine
+does not need a copy of all the data that the controller has access to.
+
+Syntax:
+{{ varaiable }}
+
+Filters in Ansible are from Jinja2, and are used for transforming data
+inside a template expression. Jinja2 ships with many filters.
+See builtin filters in the official Jinja2 template documentation.
+
+Take into account that templating happens on the Ansible controller,
+not on the task’s target host, so filters also execute on the
+controller as they manipulate local data.
+
+Filters For Formatting Data
+---------------------------
+
+{{ some_variable | to_json }}
+{{ some_variable | to_yaml }}
+
+Forcing Variables To Be Defined
+
+{{ variable | mandatory }}
+
+Defaulting Undefined Variables
+
+{{ some_variable | default(5) }}
+
+If you want to use the default value when variables evaluate
+to false or an empty string you have to set the second parameter to true:
+
+{{ lookup('env', 'MY_USER') | default('admin', true) }}
+
+List Filters:
+-------------
+{{ [3, 4, 2] | max }}
+
+Flatten a list (same thing the flatten lookup does):
+
+{{ [3, [4, 2] ] | flatten }}
+Flatten only the first level of a list (akin to the items lookup):
+
+{{ [3, [4, [2]] ] | flatten(levels=1) }}
+
+Set Theory Filters
+------------------
+All these functions return a unique set from sets or lists.
+
+
+{{ list1 | unique }}
+To get a union of two lists:
+
+{{ list1 | union(list2) }}
+To get the intersection of 2 lists (unique list of all items in both):
+
+{{ list1 | intersect(list2) }}
+To get the difference of 2 lists (items in 1 that don’t exist in 2):
+
+{{ list1 | difference(list2) }}
+To get the symmetric difference of 2 lists (items exclusive to each list):
+
+{{ list1 | symmetric_difference(list2) }}
+
+Tests
+-----
+The main difference between tests and filters are that Jinja tests are
+used for comparisons, whereas filters are used for data manipulation,
+and have different applications in jinja. Tests can also be used in list
+processing filters, like map() and select() to choose items in the list.
+
+Testing strings
+---------------
+To match strings against a substring or a regular expression, use the “match”, “search” or “regex” filters:
+
+vars:
+  url: "http://example.com/users/foo/resources/bar"
+
+tasks:
+    - debug:
+        msg: "matched pattern 1"
+      when: url is match("http://example.com/users/.*/resources/.*")
+
+    - debug:
+        msg: "matched pattern 2"
+      when: url is search("/users/.*/resources/.*")
+
+    - debug:
+        msg: "matched pattern 3"
+      when: url is search("/users/")
+
+    - debug:
+        msg: "matched pattern 4"
+      when: url is regex("example.com/\w+/foo")
+
+Version comparison
+------------------
+
+{{ ansible_facts['distribution_version'] is version('12.04', '>=') }}
+If ansible_facts['distribution_version'] is greater than or equal to 12.04, this test returns True, otherwise False.
+
+The version test accepts the following operators:
+
+<, lt, <=, le, >, gt, >=, ge, ==, =, eq, !=, <>, ne
+This test also accepts a 3rd parameter, strict which defines if strict version parsing as
+defined by distutils.version.StrictVersion should be used. The default is False
+(using distutils.version.LooseVersion), True enables strict version parsing:
+
+{{ sample_version_var is version('1.0', operator='lt', strict=True) }}
+
+Set theory tests
+----------------
+
+vars:
+    a: [1,2,3,4,5]
+    b: [2,3]
+tasks:
+    - debug:
+        msg: "A includes B"
+      when: a is superset(b)
+
+    - debug:
+        msg: "B is included in A"
+      when: b is subset(a)
+
+Python Version and Templating
+Jinja2 templates leverage Python data types and standard functions
+
+vars:
+  hosts:
+    testhost1: 127.0.0.2
+    testhost2: 127.0.0.3
+tasks:
+  - debug:
+      msg: '{{ item }}'
+    # Only works with Python 2
+    #loop: "{{ hosts.iteritems() }}"
+    # Works with both Python 2 and Python 3
+    loop: "{{ hosts.items() | list }}"
